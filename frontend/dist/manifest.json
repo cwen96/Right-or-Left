@@ -1,0 +1,13 @@
+{
+  "name": "Right or Left",
+  "version": "1.0.0",
+  "manifest_version": 2,
+  "description": "Detects bias in news articles and informs users of them. Then recommends articles on similar topic but from different source.",
+  "icons": {
+      "512": "logo512.png"
+  },
+  "browser_action": {
+      "default_icon": "logo512.png",
+      "default_popup": "popup.html"
+  }
+}
