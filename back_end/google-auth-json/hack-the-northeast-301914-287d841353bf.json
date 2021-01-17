@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "hack-the-northeast-301914",
+  "private_key_id": "287d841353bf665208e558130d4140b69fa73470",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDMwwykS7FTRHKI\n0gluVI9nGxzaoAhsopgJilpruglA5EYRKPeLAlRzh5YBe1mNPl2LNTEnvIotYouv\ndHr4H0b5cCxcDKvcl2Rzdc6p9GYaYOtcwghpyp0jf0r85+KX+Advgms//kWoNtWL\neE61mUsL9Dr5dlRfb63AE+tGg9bo48AawSOECB5eZIAWROC1aghu/Yc42n3PYu5L\n3Vboej5YqXFFHGmkfvqVvn1wEgcaRbcW7xb40C/zV3D1syeY5t88QfNnyQNw6p7X\nCMWf9iAvMcpUu1RykXZiI/vsxkVwXf7fIV4BdZEQiCcMtIF/AvChYhW8jT1oD/vh\npuvULc6tAgMBAAECggEAAKaRBHeiG13hEEq8kW9u2jjFlXNDO5cjrQoVwfhgHabs\nCxNqf/RUsN5KLXyHGxIK6Y2Ud6gbd0v0Hi1cU6wDxXikB3HZ3PRVMyG5c6RNa8GJ\nleye6rkkWS/HHPkeqPV2jpXnQdeMwJ1V/eC2vVB8os/WnSLRX1FDR9Q4X+u809Yd\n+TVpSzzgS13DTT5sIgNQlGi/NVWYCsI9NI4xms6asJtyhyKif9Is/j0OupuZc4KB\nah8/0++kQxFIoXfsA9yfl/vq8gsRWbnCWO3SZQ+D2F1mCupfiVmEIzUASM8R5Fzl\nSmEMmZz1RfvXbnEjocr62EVWYaHpHzJZfCJLUb2qMQKBgQD4GlkIlfkhreS0XDfG\n4OKgoQjQaA6Zz/QuTi1dkCsZdIRctNdM23zUM0L2PfpVYbBnlO8JA3Drr332SI9W\nvndZGhrZWEoo0fzBzLxS6xIevHMmYZ4kp+0a4qRm7athpOCJDWz2lksEsCJD0R7C\nmjhTQnFux1wrb816/XZcMpzqUQKBgQDTR4o3BTS/iqDHuSk4Bv6Iaayn9tcbMJDo\nMg5uvcayTp3/3w1SUFKW+GTThA0sNWjXfrm9NkE2fFc85toUHZGxBsl0diAFl7nW\nDD3pyPo/rNYcV2eeJ2OHK7xxRffqVNEruVDbYxq1A8Cm9NBae4ysbcZcn2Wd+iOM\nSFdXWQ6rnQKBgQDQuGm6fWDPYpmK2iHaYAqIE7F0knXmFDpaUk577fM0QP+xdjnC\nYMwNQOrOeamF9t8O5Q6LSKfQvxx6+uQLl8ST4xA/VLVezfmTmIe+QiBGV0eQPINs\nVxFzksO4C64oQSrcYb0PXbTSxtKsttrn4BIOiVEgXvs9V5tIIr9WJQY5YQKBgHQ0\nrvKgLGkFiHURhHhKcIj7BnnDrIBJ8AmmLoX+X2EHGKP5PMx/XU2oBVzJDq24Gpgc\nHXDSfH/JV/opRt01fkKN5xPlPKuWziHKzereHbYUDBe+g0FbjMR168mpoDgEup9/\n59ci5TeWfsnVcRuzRKY6IpYjHbMMN60axN9IHmeJAoGAbA+fjIAprQlCHRTWJCy/\nIz0s3AwL1iH0bzS11Qojfa82OZFDKEX4DamyluChKUvqc++4Pmfw9ZWlzeufe4pv\nXduNFTt6rN3TWp4pZrUy88RBhp+5K+JgEsF2aVBbVzE8fR73Wfx/7Kh9ljo9TZ2z\nEz7tErSB2d7qhb4TmFHBE5o=\n-----END PRIVATE KEY-----\n",
+  "client_email": "katie-serviceaccount@hack-the-northeast-301914.iam.gserviceaccount.com",
+  "client_id": "100280287528457532602",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/katie-serviceaccount%40hack-the-northeast-301914.iam.gserviceaccount.com"
+}
