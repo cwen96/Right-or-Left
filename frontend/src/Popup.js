@@ -7,7 +7,7 @@ import axios from "axios";
 import "./Popup.css";
 
 const relatedArticlesEndpoint =
-  "http://127.0.0.1:5000/getSearchResultsFromBiasedArticle";
+  "http://127.0.0.1:5000/getSearchResultsFromArticleTitle/";
 const resultsEndpoint = "http://127.0.0.1:5000/getResult";
 
 const Popup = () => {
@@ -22,9 +22,12 @@ const Popup = () => {
   };
 
   const getRelatedArticles = async (title) => {
-    // const res = await axios.post(relatedArticlesEndpoint, { title: title });
-    const res = await axios.get(relatedArticlesEndpoint);
-    setRelatedArticles(res.data.data[0].urls);
+    fetch(relatedArticlesEndpoint.concat("test"))
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => console.log(error));
+    // setRelatedArticles(res.data.data[0].urls);
   };
 
   useEffect(() => {
@@ -32,7 +35,7 @@ const Popup = () => {
     const dom = bgPage.dom;
     let curArticle = new Readability(dom).parse();
     setArticle(curArticle);
-    getResults(curArticle.textContent);
+    // getResults(curArticle.textContent);
     getRelatedArticles(curArticle.title);
   }, []);
   return (
@@ -48,15 +51,10 @@ const Popup = () => {
           className="progress"
           striped
           variant="success"
-          now={results.probability[0]}
+          now={30}
           key={1}
         />
-        <ProgressBar
-          className="progress"
-          variant="warning"
-          now={results.probability[1]}
-          key={2}
-        />
+        <ProgressBar className="progress" variant="warning" now={60} key={2} />
       </ProgressBar>
       <h1 className="result">
         {Math.max(results.probability)}% {results.result} Leaning
