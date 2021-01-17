@@ -13,22 +13,10 @@ import spacy
 from collections import Counter
 from google.cloud import automl
 
-# credential_path = 'back_end/google-auth-json/mycre.json'
-# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'hackthenortheast-301907-8ccb040d1769.json'
-# '//Users//bachha//Desktop//Github//nwHacks2021//gold-rope-301305-872a7baadfbc.json'
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = ''
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-
-# try:
-#     print("HIHIHI")
-#     f = open("mycre.json")
-#     # Do something with the file
-# except IOError:
-#     print("File not accessible")
-# finally:
-#     f.close()
 
 # Render sample HTML file
 @app.route('/')
