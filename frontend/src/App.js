@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Popup from "./Popup";
 import "./App.css";
 
 const App = () => {
   return (
-    <div>
+    <div className="app">
       <Popup />
     </div>
   );
