@@ -13,27 +13,29 @@ import spacy
 from collections import Counter
 from google.cloud import automl
 
-# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = ''
+os.environ[
+    "GOOGLE_APPLICATION_CREDENTIALS"
+] = "hackthenortheast-301907-8ccb040d1769.json"
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 # Render sample HTML file
-@app.route('/')
+@app.route("/")
 def init_extension():
-    return render_template(
-        'index.html'
-    )
+    return render_template("index.html")
 
-@app.route('/getBiasResult', methods=['POST'])
+
+@app.route("/getBiasResult", methods=["POST"])
 def getResult():
     project_id = "hackthenortheast-301907"
     model_id = "TCN1082317464940838912"
     nlp = spacy.load("en_core_web_sm")
-    
+
     json_data = request.get_json()
-    contents = json_data['article_text']
-    
+    contents = json_data["article_text"]
+    print(contents)
+
     # contents='''
     #     An internal FBI bulletin disseminated to law enforcement this week warned that "armed protests" are being planned at all 50 state capitols and in Washington in the days leading up to Biden's swearing in. Federal law enforcement agencies issued urgent bulletins calling for assistance securing the nation's capital, which now bristles with road blocks and steel barriers to wall off the "People's House" and will host as many as 25,000 National Guard -- a stronger military footprint than the US has in Afghanistan, Iraq and Syria combined.
     #     By Friday, the FBI had received 140,000 digital tips regarding the attack, including photos and video, federal officials had opened 275 criminal investigations, charged roughly 98 individuals, and taken 100 individuals into custody.
@@ -50,6 +52,8 @@ def getResult():
     results = list()
     strArray = ""
     count = 0
+    right_sum = 0
+    left_sum = 0
 
     for sentence in sentences:
         content = sentence.text
@@ -64,10 +68,9 @@ def getResult():
                 project_id, "us-central1", model_id
             )
             # Supported mime_types: 'text/plain', 'text/html'
+            # content = (strArray, mime_type) = "text/plain"
             # https://cloud.google.com/automl/docs/reference/rpc/google.cloud.automl.v1#textsnippet
-            text_snippet = automl.TextSnippet(
-                content=content, mime_type="text/plain"
-            )
+            text_snippet = automl.TextSnippet(content=content, mime_type="text/plain")
             payload = automl.ExamplePayload(text_snippet=text_snippet)
 
             response = prediction_client.predict(name=model_full_id, payload=payload)
@@ -81,54 +84,76 @@ def getResult():
                         annotation_payload.classification.score
                     )
                 )
-                results.append({'label': annotation_payload.display_name, 'percentage': annotation_payload.classification.score})
+                if annotation_payload.display_name == "right":
+                    right_sum += annotation_payload.classification.score
+                else:
+                    left_sum += annotation_payload.classification.score
 
             strArray = ""
             count = 0
-    return json.dumps({'data': results, 'content-type': 'application/json'})
-    
+    label = "right" if right_sum > left_sum else "left"
+    percentage = (
+        round(
+            right_sum / left_sum if right_sum / left_sum < 0 else left_sum / right_sum,
+            3,
+        )
+        * 100
+    )
+    return json.dumps(
+        {
+            "data": {"label": label, "percentage": percentage},
+            "content-type": "application/json",
+        }
+    )
+
 
 # Get urls of relevant articles based on the current article's title
-@app.route('/getSearchResultsFromArticleTitle', methods=['POST'])
+@app.route("/getSearchResultsFromArticleTitle", methods=["POST"])
 def getSearchResultsFromArticleTitle():
 
     results = list()
-    BASE_URL = 'https://www.google.com/search?'
-    #Max number of urls generated
+    BASE_URL = "https://www.google.com/search?"
+    # Max number of urls generated
     MAX_RESULTS_PER_QUERY = 3
     json_data = request.get_json()
-    biased_article_title = json_data['title']
+    biased_article_title = json_data["title"]
 
-    #Sample article title 
-    biased_article_title = 'Chocolate Chip cookie'
+    # Sample article title
+    biased_article_title = "Chocolate Chip cookie"
     try:
-        page = requests.get("https://www.google.com/search?q={biased_article_title}&num={num}".format(biased_article_title=biased_article_title, num=MAX_RESULTS_PER_QUERY))
+        page = requests.get(
+            "https://www.google.com/search?q={biased_article_title}&num={num}".format(
+                biased_article_title=biased_article_title, num=MAX_RESULTS_PER_QUERY
+            )
+        )
         soup = BeautifulSoup(page.content)
         # soup = BeautifulSoup(page.content, "html.parser", parse_only=SoupStrainer('a'))
         links = soup.findAll("a")
         count = 0
         urls = list()
         for link in links:
-            link_href = link.get('href')
+            link_href = link.get("href")
             if "url?q=" in link_href and not "webcache" in link_href:
-                article_url = link.get('href').split("?q=")[1].split("&sa=U")[0]
+                article_url = link.get("href").split("?q=")[1].split("&sa=U")[0]
                 url_soup = BeautifulSoup(urllib.request.urlopen(article_url))
                 article_title = url_soup.title.string
                 print(article_title)
-                results.append({'title': article_title, 'url': article_url})
+                results.append({"title": article_title, "url": article_url})
                 count += 1
             if count == MAX_RESULTS_PER_QUERY:
                 break
     except Exception as e:
         raise Exception(e.message())
-    return json.dumps({'data': results, 'content-type': 'application/json'})
+    return json.dumps({"data": results, "content-type": "application/json"})
+
 
 def checkForNonArticleUrl(url):
-    irrelevant_urls = ['wikipedia', 'dictionary']
+    irrelevant_urls = ["wikipedia", "dictionary"]
     for word in irrelevant_urls:
-        if(word in url):
+        if word in url:
             return True
     return False
+
 
 # Extract keywords from long texts using Google NLP API
 def analyze_entity_for_keywords(text_content):
@@ -154,8 +179,10 @@ def analyze_entity_for_keywords(text_content):
     # Available values: NONE, UTF8, UTF16, UTF32
     encoding_type = language_v1.EncodingType.UTF8
 
-    response = client.analyze_entities(request = {'document': document, 'encoding_type': encoding_type})
-    
+    response = client.analyze_entities(
+        request={"document": document, "encoding_type": encoding_type}
+    )
+
     # Get the language of the text, which will be the same as
     # the language specified in the request or, if not specified,
     # the automatically-detected language.
@@ -172,14 +199,14 @@ def analyze_entity_for_keywords(text_content):
         resultset.add(entity.name)
 
     num_results = min(MAX_RESULTS, int((TOP_SALIENCE_PC * len(results)) / 100))
-    #Get the n (= num_results) keywords of largest salience score
+    # Get the n (= num_results) keywords of largest salience score
     return [entity[1] for entity in heapq.nlargest(num_results, results)]
 
-if __name__ == '__main__':
-    HOST = environ.get('SERVER_HOST', 'localhost')
+
+if __name__ == "__main__":
+    HOST = environ.get("SERVER_HOST", "localhost")
     try:
-        PORT = int(environ.get('SERVER_PORT', '5000'))
+        PORT = int(environ.get("SERVER_PORT", "5000"))
     except ValueError:
         PORT = 5000
     app.run(HOST, PORT, debug=True)
-

@@ -7,7 +7,7 @@ import "./Popup.css";
 
 const relatedArticlesEndpoint =
   "http://127.0.0.1:5000/getSearchResultsFromArticleTitle";
-const resultsEndpoint = "http://127.0.0.1:5000/getResult";
+const resultsEndpoint = "http://127.0.0.1:5000/getBiasResult";
 
 const Popup = () => {
   const [results, setResults] = useState([]);
@@ -16,7 +16,6 @@ const Popup = () => {
   const [color, setColor] = useState("");
 
   const getResults = async (allText) => {
-    console.log(allText);
     const fetchJsonRequest = {
       method: "POST",
       headers: {
@@ -24,7 +23,7 @@ const Popup = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        text: allText,
+        article_text: allText,
       }),
     };
     fetch(resultsEndpoint, fetchJsonRequest)
@@ -33,11 +32,11 @@ const Popup = () => {
         return res.json();
       })
       .then((res) => {
-        const curResult = res.data[0];
-        const leftOrRight = res.data[0].leftOrRight;
+        console.log(res);
+        const leftOrRight = res.data.label;
         const curColor = leftOrRight === "left" ? "blue" : "red";
         setColor(curColor);
-        setResults(curResult);
+        setResults(res.data);
       })
       .catch((error) => console.log(error));
   };
@@ -92,7 +91,7 @@ const Popup = () => {
         <ProgressBar className="progress" variant="warning" now={60} key={2} />
       </ProgressBar>
       <h1 className="result" style={{ color: color }}>
-        {Math.max(results.probability)}% {results.result} Leaning
+        {results.percentage}% {results.label} Leaning
       </h1>
       <div className="related-container">
         <h1 className="related-header">Related articles to read:</h1>
