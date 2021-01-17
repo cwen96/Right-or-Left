@@ -8,9 +8,13 @@ import os
 from os import environ
 from google.cloud import language_v1
 import heapq
+import urllib.request
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+
+soup = BeautifulSoup(urllib.request.urlopen("https://www.geeksforgeeks.org/difference-between-computer-and-embedded-system/"))
+print("My title is {}".format(soup.title.string))
 
 # Render sample HTML file
 @app.route('/')
