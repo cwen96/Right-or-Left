@@ -3,11 +3,10 @@ import React, { useState, useEffect } from "react";
 // import ProgressBar from "react-bootstrap/ProgressBar";
 import { ProgressBar } from "react-bootstrap";
 import { Readability } from "@mozilla/readability";
-import axios from "axios";
 import "./Popup.css";
 
 const relatedArticlesEndpoint =
-  "http://127.0.0.1:5000/getSearchResultsFromArticleTitle/";
+  "http://127.0.0.1:5000/getSearchResultsFromArticleTitle";
 const resultsEndpoint = "http://127.0.0.1:5000/getResult";
 
 const Popup = () => {
@@ -15,19 +14,26 @@ const Popup = () => {
   const [article, setArticle] = useState([]);
   const [relatedArticles, setRelatedArticles] = useState([]);
 
-  const getResults = async (allText) => {
-    const res = await axios.get(resultsEndpoint, { allText: allText });
-    console.log(res);
-    setResults(res.data.data[0]);
-  };
+  const getResults = async (allText) => {};
 
   const getRelatedArticles = async (title) => {
-    fetch(relatedArticlesEndpoint.concat("test"))
+    const fetchJsonRequest = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+      }),
+    };
+    fetch(relatedArticlesEndpoint, fetchJsonRequest)
       .then((res) => {
         console.log(res);
+        return res.json();
       })
+      .then((res) => setRelatedArticles(res.data[0].urls))
       .catch((error) => console.log(error));
-    // setRelatedArticles(res.data.data[0].urls);
   };
 
   useEffect(() => {
@@ -42,7 +48,7 @@ const Popup = () => {
     <div className="popup">
       <img
         className="logo"
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/736px-Google_2015_logo.svg.png"
+        src={process.env.PUBLIC_URL + "/logo.png"}
         alt="img"
       />
       <h1 className="title">{article.title}</h1>
@@ -60,10 +66,7 @@ const Popup = () => {
         {Math.max(results.probability)}% {results.result} Leaning
       </h1>
       <div className="related-container">
-        <h1 className="related-header">
-          Suggested articles related to{" "}
-          <span className="title">{article.title}</span>:
-        </h1>
+        <h1 className="related-header">Related articles to read:</h1>
         {relatedArticles.map((relatedArticle) => {
           return (
             <a className="related-article" href={relatedArticle}>

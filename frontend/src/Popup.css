@@ -4,14 +4,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
 }
 
 img {
-  height: 50px;
+  height: 100px;
 }
 
 .title {
+  margin-bottom: 10px;
   display: block;
   font-size: large;
   color: #ddd;
@@ -20,10 +20,10 @@ img {
 
 .progress-container {
   width: 100%;
+  margin: 10px 0px 10px;
 }
 
 .progress-container {
-  width: 100%;
 }
 
 .result {
@@ -33,12 +33,15 @@ img {
 
 .related-container {
   width: 100%;
+  margin: 10px 0 10px;
 }
 
 .related-header {
   width: 100%;
+  margin: 10px 0 10px;
   color: #999;
   font-size: large;
+  text-align: center;
 }
 
 .related-article {
