@@ -119,11 +119,12 @@ def getSearchResultsFromArticleTitle():
     biased_article_title = json_data["title"]
 
     # Sample article title
-    biased_article_title = "Chocolate Chip cookie"
+    # biased_article_title = 'Chocolate Chip Cookies'
+    # biased_article_title = 'Biden inauguration: All 50 US states on alert for armed protests'
     try:
         page = requests.get(
-            "https://www.google.com/search?q={biased_article_title}&num={num}".format(
-                biased_article_title=biased_article_title, num=MAX_RESULTS_PER_QUERY
+            "https://www.google.com/search?q={biased_article_title}".format(
+                biased_article_title=biased_article_title
             )
         )
         soup = BeautifulSoup(page.content)
@@ -135,11 +136,18 @@ def getSearchResultsFromArticleTitle():
             link_href = link.get("href")
             if "url?q=" in link_href and not "webcache" in link_href:
                 article_url = link.get("href").split("?q=")[1].split("&sa=U")[0]
-                url_soup = BeautifulSoup(urllib.request.urlopen(article_url))
+
+                ar_page = requests.get(article_url)
+
+                url_soup = BeautifulSoup(ar_page.content)
+
                 article_title = url_soup.title.string
+
                 print(article_title)
-                results.append({"title": article_title, "url": article_url})
-                count += 1
+                if checkForInvalidTitle(article_title, biased_article_title) == True:
+                    results.append({"title": article_title, "url": article_url})
+                    count += 1
+
             if count == MAX_RESULTS_PER_QUERY:
                 break
     except Exception as e:
@@ -152,6 +160,15 @@ def checkForNonArticleUrl(url):
     for word in irrelevant_urls:
         if word in url:
             return True
+    return False
+
+
+def checkForInvalidTitle(test_title, demo_title):
+    if test_title.find(demo_title) == -1:
+        if test_title.find("403 Forbidden") == -1:
+            if test_title.find("unavailable") == -1:
+                if test_title.find("youtube") == -1:
+                    return True
     return False
 
 
