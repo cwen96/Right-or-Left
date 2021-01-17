@@ -13,6 +13,7 @@ const Popup = () => {
   });
   return (
     <div>
+      <img className="logo" src="" alt="img" />
       <h1>{article}</h1>
     </div>
   );
