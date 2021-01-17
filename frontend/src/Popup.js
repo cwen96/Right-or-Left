@@ -13,10 +13,37 @@ const Popup = () => {
   const [results, setResults] = useState([]);
   const [article, setArticle] = useState([]);
   const [relatedArticles, setRelatedArticles] = useState([]);
+  const [color, setColor] = useState("");
 
-  const getResults = async (allText) => {};
+  const getResults = async (allText) => {
+    console.log(allText);
+    const fetchJsonRequest = {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: allText,
+      }),
+    };
+    fetch(resultsEndpoint, fetchJsonRequest)
+      .then((res) => {
+        console.log(res);
+        return res.json();
+      })
+      .then((res) => {
+        const curResult = res.data[0];
+        const leftOrRight = res.data[0].leftOrRight;
+        const curColor = leftOrRight === "left" ? "blue" : "red";
+        setColor(curColor);
+        setResults(curResult);
+      })
+      .catch((error) => console.log(error));
+  };
 
   const getRelatedArticles = async (title) => {
+    console.log(title);
     const fetchJsonRequest = {
       method: "POST",
       headers: {
@@ -41,7 +68,7 @@ const Popup = () => {
     const dom = bgPage.dom;
     let curArticle = new Readability(dom).parse();
     setArticle(curArticle);
-    // getResults(curArticle.textContent);
+    getResults(curArticle.textContent);
     getRelatedArticles(curArticle.title);
   }, []);
   return (
@@ -51,7 +78,9 @@ const Popup = () => {
         src={process.env.PUBLIC_URL + "/logo.png"}
         alt="img"
       />
-      <h1 className="title">{article.title}</h1>
+      <h1 className="title" style={{ color: color }}>
+        {article.title}
+      </h1>
       <ProgressBar className="progress-container">
         <ProgressBar
           className="progress"
@@ -62,7 +91,7 @@ const Popup = () => {
         />
         <ProgressBar className="progress" variant="warning" now={60} key={2} />
       </ProgressBar>
-      <h1 className="result">
+      <h1 className="result" style={{ color: color }}>
         {Math.max(results.probability)}% {results.result} Leaning
       </h1>
       <div className="related-container">
