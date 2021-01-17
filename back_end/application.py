@@ -65,30 +65,30 @@ def analyze_entity_for_keywords(text_content):
     return [entity[1] for entity in heapq.nlargest(num_results, results)]
 
 # Get urls of relevant articles based on the current article's title
-@app.route('/getSearchResultsFromBiasedArticle')
-def getSearchResultsFromBiasKeywords():
-    #TODO: Replace this sample text with article title.
+@app.route('/getSearchResultsFromArticleTitle/<string:title>', methods=['POST'])
+def getSearchResultsFromBiasKeywords(title):
+    #TODO: Comment this text sample when making API calls.
 
-    text='''
-    An internal FBI bulletin disseminated to law enforcement this week warned that "armed protests" are being planned at all 50 state capitols and in Washington in the days leading up to Biden's swearing in. Federal law enforcement agencies issued urgent bulletins calling for assistance securing the nation's capital, which now bristles with road blocks and steel barriers to wall off the "People's House" and will host as many as 25,000 National Guard -- a stronger military footprint than the US has in Afghanistan, Iraq and Syria combined.
-By Friday, the FBI had received 140,000 digital tips regarding the attack, including photos and video, federal officials had opened 275 criminal investigations, charged roughly 98 individuals, and taken 100 individuals into custody.
-As senior administration leaders who would normally take the lead remained silent for days -- including the heads of the Justice Department, the Department of Homeland Security and the President himself -- federal officials launched the most extensive counterterrorism probe since September 11, 2001, and continued planning to fortify Washington.
-"Our posture is aggressive. It's going to stay that way through the inauguration," FBI Director Christopher Wray said at a Thursday briefing on inauguration security. He added that the agency was monitoring "extensive" online chatter about further potential armed protests and issued a warning to the men and woman who wreaked havoc on the Capitol.
-"We know who you are, if you're out there," Wray said, "and FBI agents are coming to find you."
-The domestic terrorists struck at a time when the US government is confronting the worst known cyberattack by a foreign adversary in its history, with Russia suspected of penetrating hundreds of businesses and numerous federal agencies. Their bloodshed and destruction come as Covid-19 claims record daily death tolls and a jobs crisis is brewing, with nearly 1 million people filing for unemployment benefits for the first time last week.
-The insurrection, fueled by Trump's lies about his definitive election loss, exposed the reach of baseless conspiracy theories that have radicalized Americans to the point that they laid siege to their own Capitol.'''
+    # text='''
+    #     An internal FBI bulletin disseminated to law enforcement this week warned that "armed protests" are being planned at all 50 state capitols and in Washington in the days leading up to Biden's swearing in. Federal law enforcement agencies issued urgent bulletins calling for assistance securing the nation's capital, which now bristles with road blocks and steel barriers to wall off the "People's House" and will host as many as 25,000 National Guard -- a stronger military footprint than the US has in Afghanistan, Iraq and Syria combined.
+    #     By Friday, the FBI had received 140,000 digital tips regarding the attack, including photos and video, federal officials had opened 275 criminal investigations, charged roughly 98 individuals, and taken 100 individuals into custody.
+    #     As senior administration leaders who would normally take the lead remained silent for days -- including the heads of the Justice Department, the Department of Homeland Security and the President himself -- federal officials launched the most extensive counterterrorism probe since September 11, 2001, and continued planning to fortify Washington.
+    #     "Our posture is aggressive. It's going to stay that way through the inauguration," FBI Director Christopher Wray said at a Thursday briefing on inauguration security. He added that the agency was monitoring "extensive" online chatter about further potential armed protests and issued a warning to the men and woman who wreaked havoc on the Capitol.
+    #     "We know who you are, if you're out there," Wray said, "and FBI agents are coming to find you."
+    #     The domestic terrorists struck at a time when the US government is confronting the worst known cyberattack by a foreign adversary in its history, with Russia suspected of penetrating hundreds of businesses and numerous federal agencies. Their bloodshed and destruction come as Covid-19 claims record daily death tolls and a jobs crisis is brewing, with nearly 1 million people filing for unemployment benefits for the first time last week.
+    #     The insurrection, fueled by Trump's lies about his definitive election loss, exposed the reach of baseless conspiracy theories that have radicalized Americans to the point that they laid siege to their own Capitol.'''
     
     # keywords = analyze_entity_for_keywords(text)
-
     # print("Keywords are {}".format(keywords))
+    # for keyword in keywords:
+
     results = list()
     BASE_URL = 'https://www.google.com/search?'
     #Max number of urls per keyword
     MAX_RESULTS_PER_QUERY = 2
 
     #Sample article title 
-    keyword = "internal FBI bulletin disseminated to law enforcement"
-    # for keyword in keywords:
+    keyword = title
     try:
         page = requests.get("https://www.google.com/search?q={keyword}".format(keyword=keyword, num=MAX_RESULTS_PER_QUERY))
         soup = BeautifulSoup(page.content, "html.parser", parse_only=SoupStrainer('a'))
