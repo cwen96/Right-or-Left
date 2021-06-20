@@ -1,5 +1,5 @@
 # Right-or-Left
-2021 Hack the Northeast
+Hack the Northeast 2021
 
 Web extension that analyzes the text on the current web page and returns a percentage that represents the political bias of the article.
 
