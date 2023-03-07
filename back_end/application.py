@@ -12,10 +12,11 @@ import urllib.request
 import spacy
 from collections import Counter
 from google.cloud import automl
+# import en_core_web_sm
 
 os.environ[
     "GOOGLE_APPLICATION_CREDENTIALS"
-] = "hackthenortheast-301907-8ccb040d1769.json"
+] = "hackthenortheast-301907-6c2890f0557c.json"
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -30,6 +31,7 @@ def init_extension():
 def getResult():
     project_id = "hackthenortheast-301907"
     model_id = "TCN1082317464940838912"
+    # nlp = en_core_web_sm.load()
     nlp = spacy.load("en_core_web_sm")
 
     json_data = request.get_json()
@@ -91,10 +93,11 @@ def getResult():
 
             strArray = ""
             count = 0
-    label = "right" if right_sum > left_sum else "left"
+    label = "Right" if right_sum > left_sum else "Left"
+    total_sum = right_sum + left_sum
     percentage = (
         round(
-            right_sum / left_sum if right_sum / left_sum < 0 else left_sum / right_sum,
+            right_sum / total_sum if right_sum > left_sum else left_sum / total_sum,
             3,
         )
         * 100

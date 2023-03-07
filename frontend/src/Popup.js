@@ -14,6 +14,7 @@ const Popup = () => {
   const [article, setArticle] = useState([]);
   const [relatedArticles, setRelatedArticles] = useState([]);
   const [color, setColor] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const getResults = async (allText) => {
     const fetchJsonRequest = {
@@ -34,15 +35,18 @@ const Popup = () => {
       .then((res) => {
         console.log(res);
         const leftOrRight = res.data.label;
-        const curColor = leftOrRight === "left" ? "blue" : "red";
+        const curColor = leftOrRight === "Left" ? "blue" : "red";
         setColor(curColor);
         setResults(res.data);
+        setIsLoading(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        setIsLoading(false);
+        console.log(error);
+      });
   };
 
   const getRelatedArticles = async (title) => {
-    console.log(title);
     const fetchJsonRequest = {
       method: "POST",
       headers: {
@@ -55,11 +59,16 @@ const Popup = () => {
     };
     fetch(relatedArticlesEndpoint, fetchJsonRequest)
       .then((res) => {
-        console.log(res);
         return res.json();
       })
-      .then((res) => setRelatedArticles(res.data[0].urls))
-      .catch((error) => console.log(error));
+      .then((res) => {
+        setRelatedArticles(res.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -70,6 +79,26 @@ const Popup = () => {
     getResults(curArticle.textContent);
     getRelatedArticles(curArticle.title);
   }, []);
+
+  const LoadLater = () => {
+    return (
+      <div>
+        <h1 className="result" style={{ color: color }}>
+          {results.percentage}% {results.label} Leaning
+        </h1>
+        <div className="related-container">
+          <h1 className="related-header">Related articles to read:</h1>
+          {relatedArticles.map((relatedArticle) => {
+            return (
+              <a className="related-article" href={relatedArticle.url}>
+                {relatedArticle.title}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="popup">
       <img
@@ -82,27 +111,25 @@ const Popup = () => {
       </h1>
       <ProgressBar className="progress-container">
         <ProgressBar
-          className="progress"
-          striped
-          variant="success"
-          now={30}
+          className="progress-left"
+          now={
+            results.label === "Left"
+              ? results.percentage
+              : 100 - results.percentage
+          }
           key={1}
         />
-        <ProgressBar className="progress" variant="warning" now={60} key={2} />
+        <ProgressBar
+          className="progress-right"
+          now={
+            results.label === "Right"
+              ? results.percentage
+              : 100 - results.percentage
+          }
+          key={2}
+        />
       </ProgressBar>
-      <h1 className="result" style={{ color: color }}>
-        {results.percentage}% {results.label} Leaning
-      </h1>
-      <div className="related-container">
-        <h1 className="related-header">Related articles to read:</h1>
-        {relatedArticles.map((relatedArticle) => {
-          return (
-            <a className="related-article" href={relatedArticle}>
-              {relatedArticle}
-            </a>
-          );
-        })}
-      </div>
+      {isLoading ? <h1 className="loading">Calculating...</h1> : <LoadLater />}
     </div>
   );
 };
